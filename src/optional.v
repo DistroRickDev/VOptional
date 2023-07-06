@@ -5,35 +5,49 @@ struct Optional[T]{
 		m_contained_object &T = unsafe{nil}
 }
 
-fn (option &Optional[T]) value[T]() T {
-	assert unsafe{option.m_contained_object != nil}, 'Optional value is not set'
-	return *option.m_contained_object 
+fn Optional.new[T](value T) Optional[T]{
+	return Optional[T]{
+		m_contained_object: &value
+	}
 }
 
-fn (option &Optional[T]) value_as_ref[T]() &T {
-	assert unsafe{option.m_contained_object != nil}, 'Optional value is not set'
-	return option.m_contained_object 
+fn Optional.new_default[T]() &Optional[T]{
+	return &Optional[T]{} 
 }
 
-fn (option &Optional[T]) value_or[T](other T) T{
-	if unsafe{option.m_contained_object != nil}{
-		return *option.m_contained_object
+fn (optional &Optional[T]) value[T]() T {
+	assert unsafe{optional.m_contained_object != nil}, 'Optional value is not set'
+	return *optional.m_contained_object 
+}
+
+fn (optional &Optional[T]) value_as_ref[T]() &T {
+	assert unsafe{optional.m_contained_object != nil}, 'Optional value is not set'
+	return optional.m_contained_object 
+}
+
+fn (optional &Optional[T]) value_or[T](other T) T{
+	if unsafe{optional.m_contained_object != nil}{
+		return *optional.m_contained_object
 	}
 	return other
 }
 
-fn (option &Optional[T]) is_some[T]() bool {
-	return unsafe{ option.m_contained_object != nil }
+fn (optional &Optional[T]) is_some[T]() bool {
+	return unsafe{ optional.m_contained_object != nil }
 }
 
-fn (option &Optional[T]) is_none[T]() bool {
-	return !option.is_some()
+fn (optional &Optional[T]) is_none[T]() bool {
+	return !optional.is_some()
 }
 
-fn (mut option Optional[T]) emplace[T](value T) {
-	option.m_contained_object = &value
+fn (mut optional Optional[T]) emplace[T](value T) {
+	optional.m_contained_object = &value
 }
 
-fn (mut option Optional[T]) reset[T](){
-	unsafe{option.m_contained_object = nil}
+fn (mut optional Optional[T]) reset[T](){
+	unsafe{optional.m_contained_object = nil}
+}
+
+fn(mut optional Optional[T]) copy[T](other &Optional[T]){
+	optional.m_contained_object = other.value_as_ref()
 }
